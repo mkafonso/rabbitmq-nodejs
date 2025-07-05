@@ -31,7 +31,7 @@ export function MessageTextarea({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && !e.shiftKey && !e.ctrlKey && !e.metaKey) {
+    if (e.key === "Enter" && (!e.shiftKey || !e.ctrlKey || !e.metaKey)) {
       e.preventDefault();
       handleSubmit();
     }
@@ -44,7 +44,7 @@ export function MessageTextarea({
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Digite sua mensagem... (Enter para enviar, Shift+Enter para nova linha)"
+          placeholder="Digite sua mensagem... "
           className="w-full pr-20 resize-none min-h-[60px]"
           rows={2}
           disabled={isLoading}
