@@ -9,6 +9,7 @@ type Props = {
   loading: boolean;
   error: string | null;
   currentUserId: string | null;
+  forceScrollToLast?: boolean;
 };
 
 export function MessageList({
@@ -16,15 +17,52 @@ export function MessageList({
   loading,
   error,
   currentUserId,
+  forceScrollToLast,
 }: Props) {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const lastMessageRef = useRef<HTMLDivElement>(null);
+  const isFirstLoad = useRef(true);
+  const previousMessagesLength = useRef(0);
 
   useEffect(() => {
-    scrollRef.current?.scrollTo({
-      top: scrollRef.current.scrollHeight,
-      behavior: "smooth",
-    });
-  }, [messages]);
+    if (loading) return;
+
+    if (isFirstLoad.current && messages.length > 0) {
+      setTimeout(() => {
+        lastMessageRef.current?.scrollIntoView({
+          behavior: "instant",
+          block: "end",
+        });
+      }, 100);
+      isFirstLoad.current = false;
+      previousMessagesLength.current = messages.length;
+      return;
+    }
+
+    if (
+      !isFirstLoad.current &&
+      messages.length > previousMessagesLength.current
+    ) {
+      setTimeout(() => {
+        lastMessageRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "end",
+        });
+      }, 100);
+      previousMessagesLength.current = messages.length;
+    }
+  }, [messages, loading]);
+
+  useEffect(() => {
+    if (forceScrollToLast && messages.length > 0) {
+      setTimeout(() => {
+        lastMessageRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "end",
+        });
+      }, 100);
+    }
+  }, [forceScrollToLast, messages.length]);
 
   if (loading) {
     return (
@@ -54,9 +92,10 @@ export function MessageList({
             Nenhuma mensagem encontrada
           </div>
         ) : (
-          messages.map((msg) => (
+          messages.map((msg, index) => (
             <div
               key={msg.id}
+              ref={index === messages.length - 1 ? lastMessageRef : null}
               className={`space-y-1 max-w-[65%] w-full ${
                 msg.sender_id === currentUserId ? "self-end" : "self-start"
               }`}
