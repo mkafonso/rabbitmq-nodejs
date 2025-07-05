@@ -39,4 +39,8 @@ export class PrismaMessageRepository implements IMessageRepositoryInterface {
         ),
     );
   }
+
+  async count(): Promise<number> {
+    return this.prisma.message.count();
+  }
 }

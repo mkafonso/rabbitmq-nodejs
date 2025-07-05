@@ -7,4 +7,6 @@ export abstract class IMessageRepositoryInterface {
     page: number,
     perPage: number,
   ): Promise<MessageEntity[]>;
+
+  abstract count(): Promise<number>;
 }

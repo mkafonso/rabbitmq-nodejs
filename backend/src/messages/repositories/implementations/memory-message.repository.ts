@@ -13,6 +13,10 @@ export class InMemoryMessageRepository implements IMessageRepositoryInterface {
     return this.messages.slice(startIndex, startIndex + perPage);
   }
 
+  async count(): Promise<number> {
+    return this.messages.length;
+  }
+
   reset(): void {
     this.messages = [];
   }
