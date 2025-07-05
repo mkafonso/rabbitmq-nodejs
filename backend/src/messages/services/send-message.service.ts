@@ -16,7 +16,9 @@ export class SendMessageService {
     private readonly rabbitMQ: RabbitMQProvider,
   ) {}
 
-  async execute(data: SendMessageRequestDto): Promise<SendMessageResponseDto> {
+  async execute(
+    data: SendMessageRequestDto & { senderId: string },
+  ): Promise<SendMessageResponseDto> {
     const user = await this.userRepository.findById(data.senderId);
     if (!user) {
       throw new NotFoundException('SenderId not found');
