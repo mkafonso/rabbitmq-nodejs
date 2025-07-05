@@ -1,0 +1,29 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String    @id @default(cuid())
+  username     String    @unique
+  passwordHash String    @map("password_hash")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  messages     Message[]
+
+  @@map("users")
+}
+
+model Message {
+  id               String   @id @default(cuid())
+  encryptedContent String   @map("content")
+  senderId         String   @map("sender_id")
+  createdAt        DateTime @default(now()) @map("created_at")
+  sender           User     @relation(fields: [senderId], references: [id], onDelete: Cascade)
+
+  @@map("messages")
+}
