@@ -1,3 +1,11 @@
+
+<img width="376" alt="image" src="https://github.com/user-attachments/assets/9959df6f-21b3-4671-91b7-5036e45a4987" />
+
+
+
+
+
+
 # Node.js + RabbitMQ
 
 ## Visão Geral
@@ -59,3 +67,4 @@ npm run dev
 - O backend aguarda o RabbitMQ e o banco estarem prontos antes de iniciar.
 - O processamento de status de funil é feito de forma assíncrona via fila.
 - Por enquanto, o consumer apenas imprime os dados processados no log.
+
