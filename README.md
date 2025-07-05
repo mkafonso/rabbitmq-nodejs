@@ -37,7 +37,7 @@ cp .env.example .env
 ### Subir os container
 
 ```bash
-docker-compose up
+docker-compose up --build
 ```
 
 ### Entrar no pasta /frontend

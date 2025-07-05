@@ -14,4 +14,4 @@ RUN npm run build
 
 EXPOSE 8080
 
-CMD ["npm", "run", "start:prod"]
+CMD ["sh", "-c", "npm run db:migrate && npm run start:prod"]
