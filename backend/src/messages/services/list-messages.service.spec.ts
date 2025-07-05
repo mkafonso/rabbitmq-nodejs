@@ -42,8 +42,8 @@ describe('[messages] ListMessagesService', () => {
 
     expect(result.messages[0].content).toBe('Terceira mensagem');
     expect(result.messages[1].content).toBe('Segunda mensagem');
-    expect(result.messages[0].sender_username).toBe('Unknown User');
-    expect(result.messages[1].sender_username).toBe('Unknown User');
+    expect(result.messages[0].sender_username).toBe('mkafonso');
+    expect(result.messages[1].sender_username).toBe('mkafonso');
   });
 
   it('should return empty array when no messages exist', async () => {
