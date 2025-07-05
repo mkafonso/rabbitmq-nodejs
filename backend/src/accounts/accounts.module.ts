@@ -23,6 +23,6 @@ import { CreateOrLoginUserService } from './services/create-or-login-user.servic
     },
   ],
   controllers: [UsersController],
-  exports: [],
+  exports: [IUserRepositoryInterface],
 })
 export class AccountsModule {}
