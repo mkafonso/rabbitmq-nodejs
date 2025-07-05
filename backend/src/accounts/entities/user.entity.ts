@@ -36,4 +36,8 @@ export class UserEntity {
   public getPasswordHash(): string {
     return this.passwordHash;
   }
+
+  public getCreatedAt(): Date {
+    return this.createdAt;
+  }
 }

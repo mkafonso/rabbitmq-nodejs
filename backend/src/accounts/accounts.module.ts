@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { UsersController } from './accounts.controller';
-import { InMemoryUserRepository } from './repositories/implementations/memory-user.repository';
+import { PrismaUserRepository } from './repositories/implementations/prisma-user.repository';
 import { IUserRepositoryInterface } from './repositories/user.repository';
 import { CreateOrLoginUserService } from './services/create-or-login-user.service';
 
@@ -19,7 +19,7 @@ import { CreateOrLoginUserService } from './services/create-or-login-user.servic
     CreateOrLoginUserService,
     {
       provide: IUserRepositoryInterface,
-      useClass: InMemoryUserRepository,
+      useClass: PrismaUserRepository,
     },
   ],
   controllers: [UsersController],
