@@ -1,36 +1,40 @@
 "use client";
 
-import { sendMessageAction } from "@/actions/send-message.action";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Send } from "lucide-react";
-import { useState, useTransition } from "react";
+import { Loader2, Send } from "lucide-react";
+import { useState } from "react";
 
 type Props = {
-  onSend: (text: string) => void;
+  onSend: (content: string) => Promise<void>;
+  currentUserId: string | null;
+  isLoading?: boolean;
 };
 
-export function MessageTextarea({ onSend }: Props) {
+export function MessageTextarea({
+  onSend,
+  currentUserId,
+  isLoading = false,
+}: Props) {
   const [input, setInput] = useState("");
-  const [isPending, startTransition] = useTransition();
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const trimmed = input.trim();
-    if (!trimmed || isPending) return;
+    if (!trimmed || isLoading || !currentUserId) return;
 
-    onSend(trimmed);
-    setInput("");
+    try {
+      await onSend(trimmed);
+      setInput("");
+    } catch (error) {
+      console.error("Failed to send message:", error);
+    }
+  };
 
-    startTransition(async () => {
-      const formData = new FormData();
-      formData.append("content", trimmed);
-
-      const result = await sendMessageAction(null, formData);
-
-      if (!result.success) {
-        console.error("Failed to send message:", result.message);
-      }
-    });
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey && !e.ctrlKey && !e.metaKey) {
+      e.preventDefault();
+      handleSubmit();
+    }
   };
 
   return (
@@ -39,18 +43,19 @@ export function MessageTextarea({ onSend }: Props) {
         <Textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Digite sua mensagem..."
+          onKeyDown={handleKeyDown}
+          placeholder="Digite sua mensagem... (Enter para enviar, Shift+Enter para nova linha)"
           className="w-full pr-20 resize-none min-h-[60px]"
           rows={2}
-          disabled={isPending}
+          disabled={isLoading}
         />
         <Button
           onClick={handleSubmit}
           className="absolute bottom-2 right-2 h-8 px-3 text-sm"
           type="button"
-          disabled={isPending}
+          disabled={isLoading}
         >
-          <Send />
+          {isLoading ? <Loader2 className="size-4 animate-spin" /> : <Send />}
         </Button>
       </div>
     </div>

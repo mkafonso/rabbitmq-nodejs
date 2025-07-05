@@ -40,8 +40,7 @@ export async function authenticateUserAction(_: unknown, data: FormData) {
           message = "Credentiais inválidas ou usuário já está sendo utilizado.";
           break;
         default:
-          message =
-            "Tente de novo dentro de alguns instantes. Tivemos um problema para realizar a operação.";
+          message = "Erro no servidor. Tente novamente em alguns instantes.";
       }
 
       return { success: false, message, errors: null };

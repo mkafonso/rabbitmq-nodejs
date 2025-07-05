@@ -1,5 +1,6 @@
 import "./globals.css";
 
+import { QueryClientProvider } from "@/providers/query-client.provider";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { PropsWithChildren } from "react";
@@ -27,9 +28,11 @@ export default function RootLayout(props: PropsWithChildren) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div className="max-w-2xl md:w-full w-[calc(100vw-1rem)] h-[calc(100vh-1rem)] my-2 mx-auto bg-[#181A1F] rounded-md shadow">
-          {children}
-        </div>
+        <QueryClientProvider>
+          <div className="max-w-2xl md:w-full w-[calc(100vw-1rem)] h-[calc(100vh-1rem)] my-2 mx-auto bg-[#181A1F] rounded-md shadow">
+            {children}
+          </div>
+        </QueryClientProvider>
       </body>
     </html>
   );

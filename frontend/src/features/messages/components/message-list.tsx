@@ -6,10 +6,17 @@ import { Message } from "../types";
 
 type Props = {
   messages: Message[];
+  loading: boolean;
+  error: string | null;
+  currentUserId: string | null;
 };
 
-export function MessageList(props: Props) {
-  const { messages } = props;
+export function MessageList({
+  messages,
+  loading,
+  error,
+  currentUserId,
+}: Props) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -19,21 +26,65 @@ export function MessageList(props: Props) {
     });
   }, [messages]);
 
+  if (loading) {
+    return (
+      <ScrollArea className="h-full p-4">
+        <div className="flex items-center justify-center h-full">
+          <div className="text-muted-foreground">Carregando mensagens...</div>
+        </div>
+      </ScrollArea>
+    );
+  }
+
+  if (error) {
+    return (
+      <ScrollArea className="h-full p-4">
+        <div className="flex items-center justify-center h-full">
+          <div className="text-red-500">{error}</div>
+        </div>
+      </ScrollArea>
+    );
+  }
+
   return (
     <ScrollArea className="h-full p-4" ref={scrollRef}>
-      <div className="flex flex-col gap-3 pb-32">
-        {messages.map((msg) => (
-          <div
-            key={msg.id}
-            className={`max-w-[75%] rounded-md p-2 text-sm ${
-              msg.sender === "me"
-                ? "self-end bg-violet-500 text-white"
-                : "self-start bg-muted"
-            }`}
-          >
-            {msg.content}
+      <div className="flex flex-col gap-10 pb-32">
+        {messages.length === 0 ? (
+          <div className="text-center text-muted-foreground py-8">
+            Nenhuma mensagem encontrada
           </div>
-        ))}
+        ) : (
+          messages.map((msg) => (
+            <div
+              key={msg.id}
+              className={`space-y-1 max-w-[65%] w-full ${
+                msg.sender_id === currentUserId ? "self-end" : "self-start"
+              }`}
+            >
+              <div className="flex items-center justify-between">
+                <strong className="font-semibold text-xs">
+                  {msg.sender_id === currentUserId
+                    ? "Você"
+                    : msg.sender_username}
+                </strong>
+              </div>
+
+              <div
+                className={`w-full rounded-md p-3 text-sm ${
+                  msg.sender_id === currentUserId
+                    ? "self-end bg-cyan-800 text-zinc-200"
+                    : "self-start bg-muted"
+                }`}
+              >
+                <div>{msg.content}</div>
+
+                <time className="text-xs text-muted-foreground">
+                  {new Date(msg.created_at).toLocaleString()}
+                </time>
+              </div>
+            </div>
+          ))
+        )}
       </div>
     </ScrollArea>
   );
