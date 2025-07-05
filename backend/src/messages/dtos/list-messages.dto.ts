@@ -17,14 +17,14 @@ export class ListMessagesResponseDto {
   messages: Array<{
     id: string;
     content: string;
-    senderId: string;
-    senderUsername: string;
-    createdAt: Date;
+    sender_id: string;
+    sender_username: string;
+    created_at: Date;
   }>;
   pagination: {
     page: number;
-    perPage: number;
+    per_page: number;
     total: number;
-    totalPages: number;
+    total_pages: number;
   };
 }

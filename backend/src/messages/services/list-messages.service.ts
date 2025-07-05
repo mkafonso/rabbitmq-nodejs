@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { IUserRepositoryInterface } from '../../accounts/repositories/user.repository';
 import {
   ListMessagesRequestDto,
   ListMessagesResponseDto,
@@ -11,7 +10,6 @@ import { decrypt } from '../utils/decrypt';
 export class ListMessagesService {
   constructor(
     private readonly messageRepository: IMessageRepositoryInterface,
-    private readonly userRepository: IUserRepositoryInterface,
   ) {}
 
   async execute(
@@ -19,32 +17,30 @@ export class ListMessagesService {
   ): Promise<ListMessagesResponseDto> {
     const { page = 1, perPage = 15 } = data;
 
-    const messages = await this.messageRepository.findPaginated(page, perPage);
+    const messagesWithUsers =
+      await this.messageRepository.findPaginatedWithUser(page, perPage);
     const total = await this.messageRepository.count();
     const totalPages = Math.ceil(total / perPage);
 
-    const messagesWithUsers = await Promise.all(
-      messages.map(async (message) => {
-        const user = await this.userRepository.findById(message.getSenderId());
-        const decryptedContent = decrypt(message.getEncryptedContent());
+    const messages = messagesWithUsers.map((messageWithUser) => {
+      const decryptedContent = decrypt(messageWithUser.encryptedContent);
 
-        return {
-          id: message.getId(),
-          content: decryptedContent,
-          senderId: message.getSenderId(),
-          senderUsername: user?.getUsername() || 'Unknown User',
-          createdAt: message.getCreatedAt(),
-        };
-      }),
-    );
+      return {
+        id: messageWithUser.id,
+        content: decryptedContent,
+        sender_id: messageWithUser.senderId,
+        sender_username: messageWithUser.sender.username,
+        created_at: messageWithUser.createdAt,
+      };
+    });
 
     return {
-      messages: messagesWithUsers,
+      messages,
       pagination: {
         page,
-        perPage,
         total,
-        totalPages,
+        per_page: perPage,
+        total_pages: totalPages,
       },
     };
   }
