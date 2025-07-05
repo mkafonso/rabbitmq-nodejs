@@ -23,11 +23,13 @@ export default function RootLayout(props: PropsWithChildren) {
   const { children } = props;
 
   return (
-    <html lang="pt-BR">
+    <html lang="pt-BR" className="dark">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <div className="max-w-2xl md:w-full w-[calc(100vw-1rem)] h-[calc(100vh-1rem)] my-2 mx-auto bg-[#181A1F] rounded-md shadow">
+          {children}
+        </div>
       </body>
     </html>
   );
